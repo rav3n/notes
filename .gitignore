@@ -1,0 +1,16 @@
+*.iml
+.gradle
+/local.properties
+.idea/*
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+/release
+app/*.apk
+/projectFilesBackup*
+release/
+src/main/gen/
+!/app/src/main/java/com/jeench/manager/screens/find/card/offers/schedule/
+app/release/
+app/src/main/gen/
