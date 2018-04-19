@@ -1,4 +1,4 @@
-package sonder.notes.presentation
+package sonder.notes.presentation.base
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import sonder.notes.R
 import sonder.notes.databinding.ActivityApplicationBinding
+import sonder.notes.presentation.screens.notes.NotesListFragment
 
 class ApplicationActivity : AppCompatActivity() {
 

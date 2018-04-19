@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="item" type="sonder.notes.presentation.screens.notes.AdapterItem"/>
+    </data>
+    <LinearLayout
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            tools:text="Text"
+            android:text='@{String.format("%d", item.note.id)}'
+            android:textSize="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            tools:text="Text"
+            android:text='@{String.format("%d", item.note.id)}'
+            android:textSize="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</layout>
