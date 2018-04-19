@@ -35,4 +35,8 @@ class ApplicationActivity : AppCompatActivity() {
         supportFragmentManager.executePendingTransactions()
 
     }
+
+    fun popup() {
+        supportFragmentManager.popBackStack()
+    }
 }

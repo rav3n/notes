@@ -1,16 +1,22 @@
 package sonder.notes.presentation.screens.notes
 
+import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.DividerItemDecoration.VERTICAL
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import sonder.notes.R
 import sonder.notes.databinding.FragmentNotesListBinding
 import sonder.notes.databinding.NotesListItemViewBinding
 import sonder.notes.presentation.base.BaseFragment
+import sonder.notes.presentation.screens.editor.EditorFragment
 import sonder.notes.presentation.screens.notes.data.entity.Note
 
 class NotesListFragment : BaseFragment() {
@@ -24,25 +30,31 @@ class NotesListFragment : BaseFragment() {
         return binding.root
     }
 
-    private fun listener()= object : NotesListCallbacks {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        notesViewModel().notes.observe(this, Observer {
+            val items = arrayListOf<AdapterItem>()
+            it!!.forEach { items.add(AdapterItem(it)) }
+            (binding.recycler.adapter as Adapter).push(items)
+        })
+    }
+
+    private fun listener() = object : NotesListCallbacks {
         override fun onAdd() {
-            (binding.recycler.adapter as Adapter).addNewItem()
+            root().pushFragment(EditorFragment.newInstance(0,""), true)
         }
     }
 
     private fun initRecycler() {
         binding.recycler.layoutManager = LinearLayoutManager(context)
+        binding.recycler.addItemDecoration(itemDecorator())
         binding.recycler.adapter = Adapter()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Thread(runnable(this)).start()
-    }
-
-    private fun runnable(context: NotesListFragment) = Runnable {
-        val items = arrayListOf(AdapterItem(Note(1)), AdapterItem(Note(2)), AdapterItem(Note(3)))
-        context.root().runOnUiThread { (binding.recycler.adapter as Adapter).push(items) }
+    private fun itemDecorator(): RecyclerView.ItemDecoration? {
+        val decoration = DividerItemDecoration(context, VERTICAL)
+        decoration.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.notes_list_item_decorator)!!)
+        return decoration
     }
 
     companion object {
@@ -58,12 +70,6 @@ class Adapter : RecyclerView.Adapter<ViewHolder>() {
         val diff = DiffImpl(items, newItems)
         items = ArrayList(newItems)
         DiffUtil.calculateDiff(diff).dispatchUpdatesTo(this)
-    }
-
-    fun addNewItem() {
-        val newItems = ArrayList(items)
-        newItems.add(AdapterItem(Note((items.size).toLong())))
-        push(newItems)
     }
 
     override fun getItemCount() = items.size

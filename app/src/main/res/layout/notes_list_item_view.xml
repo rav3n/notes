@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
         <TextView
             tools:text="Text"
-            android:text='@{String.format("%d", item.note.id)}'
+            android:text='@{String.format("%s", item.note.title)}'
             android:textSize="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
