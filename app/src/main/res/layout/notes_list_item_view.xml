@@ -5,27 +5,34 @@
         <variable name="item" type="sonder.notes.presentation.screens.notes.AdapterItem"/>
         <variable name="callbacks" type="sonder.notes.presentation.screens.notes.actions.RecyclerActions"/>
     </data>
-    <LinearLayout
-        android:onClick="@{() -> callbacks.onEditAction(item.note)}"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
+    <FrameLayout
+        android:background="#9e9e9e"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatTextView
-            tools:text="Молоко"
-            android:text='@{String.format("%s", item.note.title)}'
-            android:textSize="24dp"
+        <LinearLayout
+            android:id="@+id/view_foreground"
+            android:onClick="@{() -> callbacks.onEditAction(item.note)}"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:background="@color/backgroundColor"
+            android:paddingRight="16dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <android.support.v7.widget.AppCompatTextView
-            tools:text="Кол-во: 2"
-            android:text='@{String.format("%d", item.note.id)}'
-            android:textSize="16dp"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatTextView
+                tools:text="Молоко"
+                android:text='@{String.format("%s", item.note.title)}'
+                android:textSize="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <android.support.v7.widget.AppCompatTextView
+                tools:text="Кол-во: 2"
+                android:text='@{String.format("%d", item.note.id)}'
+                android:textSize="16dp"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </FrameLayout>
 </layout>

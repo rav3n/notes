@@ -5,6 +5,7 @@
     </data>
     <FrameLayout
         android:id="@+id/container"
+        android:background="@color/backgroundColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </layout>

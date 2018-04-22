@@ -9,4 +9,6 @@
     <color name="colorPrimaryDark">#0077c2</color>
     <color name="colorAccent">#80d6ff</color>
     <color name="colorTextColor">#ffebee</color>
+    <color name="defaultText">#303030</color>
+    <color name="backgroundColor">#FAFAFA</color>
 </resources>

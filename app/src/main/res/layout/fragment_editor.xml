@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="note" type="sonder.notes.presentation.screens.editor.data.Note"/>
     </data>
@@ -13,12 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.v7.widget.AppCompatEditText
+                tools:text="Bread"
                 android:id="@+id/edit_field"
                 android:text="@{note.title}"
                 android:hint="@string/edit_note_hint"
                 android:inputType="textCapSentences"
                 android:selection="@{note.title.length()}"
                 android:textSize="16dp"
+                android:textColor="@color/defaultText"
                 android:imeOptions="actionDone"
                 android:maxLength="100"
                 android:layout_width="match_parent"
