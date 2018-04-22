@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Notes</string>
     <string name="edit_note_hint">Наименование....</string>
+    <string name="clear">Очистить</string>
+    <string name="list_tip">Нажми на \"+\" для добавляния новой заметки</string>
 </resources>

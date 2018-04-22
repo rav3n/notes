@@ -3,10 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable name="callbacks" type="sonder.notes.presentation.screens.notes.NotesListCallbacks"/>
+        <variable name="tipVisibility" type="boolean"/>
+        <import type="android.view.View"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <android.support.v7.widget.AppCompatTextView
+            android:text="@string/list_tip"
+            android:gravity="center"
+            android:visibility="@{tipVisibility ? View.VISIBLE : View.GONE }"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
