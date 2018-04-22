@@ -57,8 +57,7 @@ class NotesListFragment : BaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
-        val inflater = activity!!.menuInflater
-        inflater.inflate(R.menu.list, menu)
+        activity!!.menuInflater.inflate(R.menu.list, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -163,9 +162,7 @@ class ItemTouchHelperCallback(
     private val listener: RecyclerItemTouchHelperListener
 ) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT.or(ItemTouchHelper.RIGHT)) {
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        viewHolder?.let {
-            listener.onSwiped(viewHolder, direction, viewHolder.adapterPosition)
-        }
+        listener.onSwiped(viewHolder, direction, viewHolder.adapterPosition)
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
