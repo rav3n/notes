@@ -1,29 +1,34 @@
 package sonder.notes.presentation.screens.notes
 
 import android.arch.lifecycle.Observer
-import android.databinding.DataBindingUtil
 import android.graphics.Canvas
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
+import kotlinx.android.synthetic.main.fragment_notes_list.*
+import kotlinx.android.synthetic.main.notes_list_item_view.view.*
 import sonder.notes.R
-import sonder.notes.databinding.FragmentNotesListBinding
-import sonder.notes.databinding.NotesListItemViewBinding
+import sonder.notes.data.entities.Note
 import sonder.notes.presentation.base.ApplicationActivity
 import sonder.notes.presentation.base.BaseFragment
 import sonder.notes.presentation.screens.editor.EditorFragment
 import sonder.notes.presentation.screens.notes.actions.RecyclerActions
-import sonder.notes.presentation.screens.notes.data.entity.Note
 
 class NotesListFragment : BaseFragment() {
 
-    private lateinit var binding: FragmentNotesListBinding
+    private val recyclerListener = object : RecyclerItemTouchHelperListener {
+        override fun onSwiped(holder: RecyclerView.ViewHolder, direction: Int, position: Int) {
+            val id = recycler.adapter.getItemId(position)
+            notesViewModel().delete(id)
+        }
+    }
+
+    private val touchHelper = ItemTouchHelper(ItemTouchHelperCallback(recyclerListener))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,28 +36,31 @@ class NotesListFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentNotesListBinding.inflate(inflater, container, false)
-        binding.callbacks = listener()
-        initRecycler()
-        return binding.root
+        return inflater.inflate(R.layout.fragment_notes_list, container, false)
+    }
+
+    private fun itemDecorator(): RecyclerView.ItemDecoration? {
+        val decoration = DividerItemDecoration(context, VERTICAL)
+        decoration.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.notes_list_item_decorator)!!)
+        return decoration
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        button_add.setOnClickListener {
+            root().pushFragment(EditorFragment.newInstance(0,""))
+        }
+        recycler.addItemDecoration(itemDecorator())
+        recycler.adapter = Adapter(RecyclerActionsImpl(root()))
+        touchHelper.attachToRecyclerView(recycler)
+
         notesViewModel().notes.observe(this, Observer {
+            tip.visibility = if (it.isNullOrEmpty()) View.VISIBLE else View.GONE
             val items = arrayListOf<AdapterItem>()
-            it!!.forEach { items.add(AdapterItem(it)) }
-            (binding.recycler.adapter as Adapter).push(items)
-            binding.tipVisibility = items.isEmpty()
+            it?.forEach { items.add(AdapterItem(it)) }
+            (recycler.adapter as Adapter).push(items)
         })
         notesViewModel().fetchData()
-    }
-
-
-    private fun listener() = object : NotesListCallbacks {
-        override fun onAdd() {
-            root().pushFragment(EditorFragment.newInstance(0,""), true)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -68,26 +76,6 @@ class NotesListFragment : BaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initRecycler() {
-        binding.recycler.layoutManager = LinearLayoutManager(context)
-        binding.recycler.addItemDecoration(itemDecorator())
-        binding.recycler.adapter = Adapter(RecyclerActionsImpl(root()))
-        ItemTouchHelper(ItemTouchHelperCallback(recyclerListener)).attachToRecyclerView(binding.recycler)
-    }
-
-    private val recyclerListener = object : RecyclerItemTouchHelperListener {
-        override fun onSwiped(holder: RecyclerView.ViewHolder, direction: Int, position: Int) {
-            val id = binding.recycler.adapter.getItemId(position)
-            notesViewModel().delete(id)
-        }
-    }
-
-    private fun itemDecorator(): RecyclerView.ItemDecoration? {
-        val decoration = DividerItemDecoration(context, VERTICAL)
-        decoration.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.notes_list_item_decorator)!!)
-        return decoration
-    }
-
     companion object {
         @JvmStatic fun newInstance() = NotesListFragment()
     }
@@ -97,7 +85,7 @@ class RecyclerActionsImpl(
     private val root: ApplicationActivity
 ) : RecyclerActions {
     override fun onEditAction(note: Note){
-        root.pushFragment(EditorFragment.newInstance(note.id, note.title), true)
+        root.pushFragment(EditorFragment.newInstance(note.id, note.text))
     }
 }
 
@@ -118,14 +106,13 @@ class Adapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = NotesListItemViewBinding.inflate(inflater, parent, false)
-        binding.callbacks = recyclerActionsImpl
-        return ViewHolder(binding.root)
+        return ViewHolder(inflater.inflate(R.layout.notes_list_item_view, parent, false)) {
+            recyclerActionsImpl.onEditAction(items[it].note)
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.item = items[position]
-        holder.binding.executePendingBindings()
+        holder.itemView.title.text = items[position].note.text
     }
 
 }
@@ -149,9 +136,11 @@ class DiffImpl(
 
 data class AdapterItem(val note: Note)
 
-class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    val binding: NotesListItemViewBinding = DataBindingUtil.bind(view)!!
-    val viewForeground: View by lazy { binding.viewForeground }
+class ViewHolder(view: View, callback: (index: Int) -> Unit) : RecyclerView.ViewHolder(view) {
+    init {
+        view.setOnClickListener { callback.invoke(adapterPosition) }
+    }
+    val viewForeground: View by lazy { view.view_foreground }
 }
 
 interface RecyclerItemTouchHelperListener {

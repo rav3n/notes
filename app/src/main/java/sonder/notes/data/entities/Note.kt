@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity
-data class NoteEntity(
+data class Note(
     @PrimaryKey(autoGenerate = true) val id: Long,
     @ColumnInfo val text: String
 )

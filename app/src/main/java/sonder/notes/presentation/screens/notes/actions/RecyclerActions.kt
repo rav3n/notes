@@ -1,6 +1,6 @@
 package sonder.notes.presentation.screens.notes.actions
 
-import sonder.notes.presentation.screens.notes.data.entity.Note
+import sonder.notes.data.entities.Note
 
 interface RecyclerActions {
     fun onEditAction(note: Note)
