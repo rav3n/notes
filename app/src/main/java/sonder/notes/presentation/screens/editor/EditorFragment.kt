@@ -52,7 +52,7 @@ class EditorFragment : BaseFragment() {
         })
 
         button_ready.setOnClickListener {
-            if (edit_field.text.isNotEmpty()) {
+            if (edit_field.text.isNullOrEmpty().not()) {
                 actionCreator.update(Note(note.id, edit_field.text.toString()))
             }
             hideKeyboard()

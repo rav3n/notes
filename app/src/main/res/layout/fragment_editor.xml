@@ -8,10 +8,12 @@
     android:paddingRight="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.design.widget.TextInputLayout
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+
+        <androidx.appcompat.widget.AppCompatEditText
             tools:text="Bread"
             android:id="@+id/edit_field"
             android:hint="@string/edit_note_hint"
@@ -22,14 +24,16 @@
             android:maxLength="100"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
         android:text="@string/editor_hint"
         android:gravity="center"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <Button
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_ready"
         android:text="@string/ready"
         android:layout_width="match_parent"

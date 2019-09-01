@@ -1,15 +1,12 @@
 package sonder.notes.presentation.screens.notes
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.graphics.Canvas
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.DividerItemDecoration.VERTICAL
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import android.view.*
+import androidx.recyclerview.widget.*
 import kotlinx.android.synthetic.main.fragment_notes_list.*
 import kotlinx.android.synthetic.main.notes_list_item_view.view.*
 import sonder.notes.R
@@ -23,8 +20,9 @@ class NotesListFragment : BaseFragment() {
 
     private val recyclerListener = object : RecyclerItemTouchHelperListener {
         override fun onSwiped(holder: RecyclerView.ViewHolder, direction: Int, position: Int) {
-            val id = recycler.adapter.getItemId(position)
-            notesViewModel().delete(id)
+            recycler.adapter?.getItemId(position)?.apply {
+                notesViewModel().delete(this)
+            }
         }
     }
 
@@ -39,10 +37,14 @@ class NotesListFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_notes_list, container, false)
     }
 
-    private fun itemDecorator(): RecyclerView.ItemDecoration? {
-        val decoration = DividerItemDecoration(context, VERTICAL)
-        decoration.setDrawable(ContextCompat.getDrawable(context!!,R.drawable.notes_list_item_decorator)!!)
-        return decoration
+    private fun itemDecorator(): RecyclerView.ItemDecoration {
+        return DividerItemDecoration(requireContext(), VERTICAL).apply {
+            setDrawable(ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.notes_list_item_decorator
+                )!!
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,6 +52,7 @@ class NotesListFragment : BaseFragment() {
         button_add.setOnClickListener {
             root().pushFragment(EditorFragment.newInstance(0,""))
         }
+        recycler.layoutManager = LinearLayoutManager(context)
         recycler.addItemDecoration(itemDecorator())
         recycler.adapter = Adapter(RecyclerActionsImpl(root()))
         touchHelper.attachToRecyclerView(recycler)
@@ -63,13 +66,13 @@ class NotesListFragment : BaseFragment() {
         notesViewModel().fetchData()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        activity!!.menuInflater.inflate(R.menu.list, menu)
+        requireActivity().menuInflater.inflate(R.menu.list, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.menu_list_clear) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_list_clear) {
             notesViewModel().deleteAll()
             return true
         }
@@ -161,26 +164,26 @@ class ItemTouchHelperCallback(
         }
     }
 
-    override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
         return true
     }
 
-    override fun onChildDraw(c: Canvas?, recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        viewHolder?.let {
+    override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+        viewHolder.let {
             val foreground = (it as ViewHolder).viewForeground
             ItemTouchHelper.Callback.getDefaultUIUtil().onDraw(c, recyclerView, foreground, dX, dY, actionState, isCurrentlyActive)
         }
     }
 
-    override fun onChildDrawOver(c: Canvas?, recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        viewHolder?.let {
+    override fun onChildDrawOver(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+        viewHolder.let {
             val foreground = (it as ViewHolder).viewForeground
             ItemTouchHelper.Callback.getDefaultUIUtil().onDrawOver(c, recyclerView, foreground, dX, dY, actionState, isCurrentlyActive)
         }
     }
 
-    override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
-        viewHolder?.let {
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+        viewHolder.let {
             val foreground = (it as ViewHolder).viewForeground
             ItemTouchHelper.Callback.getDefaultUIUtil().clearView(foreground)
         }

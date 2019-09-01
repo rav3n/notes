@@ -1,16 +1,16 @@
 package sonder.notes.presentation.base
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.nigelbrown.fluxion.Flux
 import sonder.notes.data.repository.NoteRepository
 import sonder.notes.presentation.NoteApplication
 import sonder.notes.presentation.screens.notes.data.NotesInteractor
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : androidx.fragment.app.Fragment() {
 
     fun root() = activity as ApplicationActivity
     fun db() = (root().application as NoteApplication).db

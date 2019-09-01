@@ -1,8 +1,8 @@
 package sonder.notes.presentation.base
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import sonder.notes.R
 import sonder.notes.presentation.screens.notes.NotesListFragment
 
@@ -12,7 +12,7 @@ class ApplicationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_application)
         firstStart(savedInstanceState) {
-            pushFragment(NotesListFragment.newInstance())
+            pushFragment(NotesListFragment.newInstance(), false)
         }
     }
 
@@ -22,10 +22,14 @@ class ApplicationActivity : AppCompatActivity() {
         }
     }
 
-    fun pushFragment(fragment: Fragment) {
+    fun pushFragment(fragment: Fragment, addToBackStack: Boolean = true) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
-            .addToBackStack(fragment.toString())
+            .apply {
+                if (addToBackStack) {
+                    addToBackStack(fragment.toString())
+                }
+            }
             .commit()
     }
 
