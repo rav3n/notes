@@ -22,28 +22,28 @@ class NotesInteractor(
     fun create(title: String) { updateOrCreate(Note(0, title)) }
     fun update(note: Note) { updateOrCreate(note) }
     private fun updateOrCreate(note: Note) {
-        launch(UI) {
+        launch(CommonPool) {
             noteRepository.insert(note)
             fetchData()
         }
     }
 
     fun delete(id: Long) {
-        launch(UI) {
+        launch(CommonPool) {
             noteRepository.delete(id)
             fetchData()
         }
     }
 
     fun deleteAll() {
-        launch(UI) {
+        launch(CommonPool) {
             noteRepository.deleteAll()
             fetchData()
         }
     }
 
     fun fetchData() {
-        launch(UI) {
+        launch(CommonPool) {
             notes.postValue(mapper(noteRepository.list()))
         }
     }
