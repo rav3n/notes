@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.nigelbrown.fluxion.Flux
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import sonder.notes.data.entities.Note
 import sonder.notes.data.repository.NoteRepository
@@ -24,27 +23,29 @@ class NotesInteractor(
     fun update(note: Note) { updateOrCreate(note) }
     private fun updateOrCreate(note: Note) {
         launch(UI) {
-            async(CommonPool) { noteRepository.insert(note) }.await()
+            noteRepository.insert(note)
             fetchData()
         }
     }
 
     fun delete(id: Long) {
         launch(UI) {
-            async(CommonPool) { noteRepository.delete(id) }.await()
+            noteRepository.delete(id)
             fetchData()
         }
     }
 
     fun deleteAll() {
         launch(UI) {
-            async(CommonPool) { noteRepository.deleteAll() }.await()
+            noteRepository.deleteAll()
             fetchData()
         }
     }
 
     fun fetchData() {
-        launch(UI) { async(CommonPool) { notes.postValue(mapper(noteRepository.list())) }.await() }
+        launch(UI) {
+            notes.postValue(mapper(noteRepository.list()))
+        }
     }
 
     private fun mapper(source: List<Note>) : ArrayList<Note> {
